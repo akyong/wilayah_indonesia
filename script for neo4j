@@ -1,0 +1,91 @@
+LOAD CSV WITH HEADERS FROM "https://uc8f4b73513e7348078eac674b9d.dl.dropboxusercontent.com/cd/0/get/AxwHDcdSD3dM8kGHK_EcsJny8_FRGInEJt2tZgpolp1UeY2y6f7yFhMBdL1-RAZeBxUsnqt-xPHk9p1ejN3VBdMvj8CxeY6MaAvsGE5AKEJj18dij7F1ytH8cexx3AUFA4s/file#" AS row
+CREATE (n:Provinsi)
+SET n = row,
+n.id = toInteger(row.id),
+n.level = toInteger(row.level)
+
+CREATE INDEX ON :Provinsi(id,code,region_code)
+
+
+LOAD CSV WITH HEADERS FROM "https://uc5fb2097d2d6eb3dc025d624de6.dl.dropboxusercontent.com/cd/0/get/Axx7w8UsIpMu36rYsW5zvGviYyRnV8prb81WUQKfHUbkFS0MW3w8wcd08uf18u-YrWoVS0sfi6h0p5g_5ftXZrdFVr9NimGvwxrEkNd91AyedbDBjkDqHY0NnM92d0atDEU/file#" AS row
+CREATE (n:Kabupaten)
+SET n = row,
+n.id = toInteger(row.id),
+n.level = toInteger(row.level)
+
+CREATE INDEX ON :Kabupaten(id,code,region_code)
+
+MATCH (p:Provinsi),(k:Kabupaten)
+WHERE p.code = k.region_code
+CREATE (k)-[:IN]->(p)
+
+
+LOAD CSV WITH HEADERS FROM "https://uc1b03b06e0b0c2c85f5971d9c2d.dl.dropboxusercontent.com/cd/0/get/Axw3TIRfjo3BbEFzLCxgDYgUsn0WfKC8KEvRcA_DxB7WavyF3onTIu4zH9vHXsyMN5lJGAn4rMHYwjELDnO_PchSoS21XIy64NoyJ8EvYQxq0LwICgXLgsPtTyCuK3Ut-hs/file#" AS row
+CREATE (n:Kecamatan)
+SET n = row,
+n.id = toInteger(row.id),
+n.level = toInteger(row.level)
+
+CREATE INDEX ON :Kecamatan(id,code,region_code)
+
+MATCH (k:Kabupaten),(l:Kecamatan)
+WHERE k.code = l.region_code
+CREATE (l)-[:IN]->(k)
+
+MATCH (k:Kabupaten)
+WITH k
+MATCH (l:Kecamatan)
+WHERE k.code = l.region_code
+CREATE (l)-[:IN]->(k);
+
+
+LOAD CSV WITH HEADERS FROM "https://uccbf83372db83206135d69eed6d.dl.dropboxusercontent.com/cd/0/get/AxzC8otRGyeJ1wKPby_c7N7lp9K6bz63Oz7RTiA-9f34jIHw9iu_QutY1JU03c7yZDWV8so9Jd64oKUS-Sq4NBIxoSfFOzqklYLleskuAI3Ws3lZtWMJMIEkMcFnkbvKTJs/file#" AS row
+CREATE (n:Kelurahan)
+SET n = row,
+n.id = toInteger(row.id),
+n.level = toInteger(row.level)
+
+MATCH (kec:Kecamatan)
+WITH k
+MATCH (kel:Kelurahan)
+WHERE kec.code = kel.region_code
+CREATE (kel)-[:IN]->(kec);
+
+
+MATCH (a)
+RETURN a LIMIT 5000
+
+CREATE INDEX FOR (n:Provinsi) ON (n.code)
+CREATE INDEX FOR (n:Provinsi) ON (n.region_code)
+CREATE INDEX FOR (n:Provinsi) ON (n.code, region_code)
+
+
+CREATE INDEX FOR (n:Kabupaten) ON (n.code)
+CREATE INDEX FOR (n:Kabupaten) ON (n.region_code)
+CREATE INDEX FOR (n:Kabupaten) ON (n.code, region_code)
+
+CREATE INDEX FOR (n:Kecamatan) ON (n.code)
+CREATE INDEX FOR (n:Kecamatan) ON (n.region_code)
+CREATE INDEX FOR (n:Kecamatan) ON (n.code, region_code)
+
+CREATE INDEX FOR (n:Kelurahan) ON (n.code)
+CREATE INDEX FOR (n:Kelurahan) ON (n.region_code)
+CREATE INDEX FOR (n:Kelurahan) ON (n.code, region_code)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
